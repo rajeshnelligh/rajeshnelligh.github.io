@@ -134,6 +134,9 @@ body{
     width:100%;
     color:white;
 }
+.bottomblock .cursorauto{
+    cursor:auto;
+}
 </style>
 </head>
 <body>
@@ -153,12 +156,12 @@ body{
     <a class="item swap" onclick="swapSources()">&harr;</a>
     <a class="item source" href="" target="_blank">View in Google</a>
 
-    <label class="item radio">Auto Open</label>
+    <label class="item radio cursorauto">Auto Open</label>
     <label class="item radio"><input type="radio" value="none" name="radio" onclick="changeAutoOpen()">None</label>
     <label class="item radio"><input type="radio" value="google" name="radio" onclick="changeAutoOpen()">Google</label>
     <label class="item radio"><input type="radio" value="oxford" name="radio" onclick="changeAutoOpen()" checked>Oxford</label>
 
-    <div class="item contact">Contact: swservice.webdev@gmail.com</div>
+    <div class="item contact cursorauto">Contact: swservice.webdev@gmail.com</div>
 </div>
 
 <script>
@@ -27213,7 +27216,9 @@ let typeOfWords = "words";
 if(!localStorage.getItem("wordnumber")){
     localStorage.setItem("wordnumber","0");
     localStorage.setItem("phrasenumber","0");
+    localStorage.setItem("tabname","words");
     localStorage.setItem("autoopen","oxford");
+    localStorage.setItem("rightsource",sources[1].textContent);
 
     document.querySelector(".word").textContent = words[0][0];
     let query = "https://www.google.com/search?q=" + encodeURIComponent("meaning and usage of the word " + '"' + words[0][0] + '"');
@@ -27223,17 +27228,39 @@ if(!localStorage.getItem("wordnumber")){
 }
 else{
     let wordNumber = getWordNumber();
+    let wordsArray;
+    let wordType;
 
-    document.querySelector(".word").textContent = words[wordNumber][0];
-    let query = "https://www.google.com/search?q=" + encodeURIComponent("meaning and usage of the word " + '"' + words[wordNumber][0] + '"');
+    if(localStorage.getItem("tabname") == "words"){
+        wordsArray = words;
+        wordType = "word";
+        wordTypeButtons[0].classList.add("highlight");
+        wordTypeButtons[1].classList.remove("highlight");
+    }
+    else{
+        wordsArray = phrases;
+        wordType = "phrase";
+        wordTypeButtons[0].classList.remove("highlight");
+        wordTypeButtons[1].classList.add("highlight");
+    }
+
+    document.querySelector(".word").textContent = wordsArray[wordNumber][0];
+    let query = "https://www.google.com/search?q=" + encodeURIComponent("meaning and usage of the " + wordType + ' "' + wordsArray[wordNumber][0] + '"');
         
     if(sources[0].textContent == "View in Oxford"){
-        sources[0].href = words[wordNumber][1];
+        sources[0].href = wordsArray[wordNumber][1];
         sources[1].href = query;
     }
     else{
         sources[0].href = query;
-        sources[1].href = words[wordNumber][1];
+        sources[1].href = wordsArray[wordNumber][1];
+    }
+
+    if(localStorage.getItem("rightsource") != sources[1].textContent){
+        let swapButton = document.querySelector(".swap");
+
+        swapButton.after(sources[0]);
+        swapButton.before(sources[1]);
     }
 
     let autoOpen = localStorage.getItem("autoopen");
@@ -27274,6 +27301,8 @@ function changeTypeOfWords(type){
         sources[0].href = query;
         sources[1].href = wordsArray[wordNumber][1];
     }
+
+    localStorage.setItem("tabname",typeOfWords)
 }
 
 function getWordNumber(){
@@ -27349,6 +27378,8 @@ function swapSources(){
     let swapButton = document.querySelector(".swap");
     let sources = document.querySelectorAll(".source");
     
+    localStorage.setItem("rightsource",sources[0].textContent)
+
     swapButton.after(sources[0]);
     swapButton.before(sources[1]);
 }
