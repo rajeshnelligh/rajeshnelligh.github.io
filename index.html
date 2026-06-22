@@ -27211,7 +27211,6 @@ let phrases = [
 let wordTypeButtons = document.querySelectorAll(".typesofwords button");
 let prevNextButtons = document.querySelectorAll(".prevnext");
 let sources = document.querySelectorAll(".source");
-let typeOfWords = "words";
 
 if(!localStorage.getItem("wordnumber")){
     localStorage.setItem("wordnumber","0");
@@ -27268,16 +27267,17 @@ else{
 }
 
 function changeTypeOfWords(type){
-    if(type == typeOfWords){
+    if(type == localStorage.getItem("tabname")){
         return;
     }
 
-    typeOfWords = type;
     let wordNumber = getWordNumber();
     let wordsArray;
     let wordType;
 
-    if(typeOfWords == "words"){
+    localStorage.setItem("tabname",type)
+
+    if(type == "words"){
         wordsArray = words;
         wordType = "word";
         wordTypeButtons[0].classList.add("highlight");
@@ -27301,15 +27301,13 @@ function changeTypeOfWords(type){
         sources[0].href = query;
         sources[1].href = wordsArray[wordNumber][1];
     }
-
-    localStorage.setItem("tabname",typeOfWords)
 }
 
 function getWordNumber(){
-    if(typeOfWords == "words"){
+    if(localStorage.getItem("tabname") == "words"){
         return +localStorage.getItem("wordnumber");
     }
-    else if(typeOfWords == "phrases"){
+    else{
         return +localStorage.getItem("phrasenumber");
     }
 }
@@ -27321,7 +27319,7 @@ function prevNext(button){
     let wordType;
     let autoOpen = document.querySelector("input:checked").value;
 
-    if(typeOfWords == "words"){
+    if(localStorage.getItem("tabname") == "words"){
         storageItemName = "wordnumber";
         wordsArray = words;
         wordType = "word";
