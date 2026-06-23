@@ -142,8 +142,8 @@ body{
 <body>
 
 <div class="typesofwords">
-    <button class="highlight" onclick="changeTypeOfWords('words')">Words</button>
-    <button onclick="changeTypeOfWords('phrases')">Phrases</button>
+    <button class="highlight" onclick="changeTab('words')">Words</button>
+    <button onclick="changeTab('phrases')">Phrases</button>
 </div>
 
 <div class="word"></div>
@@ -27266,16 +27266,17 @@ else{
     document.querySelector('input[value="' + autoOpen + '"]').checked = true;
 }
 
-function changeTypeOfWords(type){
+function changeTab(type){
     if(type == localStorage.getItem("tabname")){
         return;
+    }
+    else{
+        localStorage.setItem("tabname",type);
     }
 
     let wordNumber = getWordNumber();
     let wordsArray;
     let wordType;
-
-    localStorage.setItem("tabname",type)
 
     if(type == "words"){
         wordsArray = words;
